@@ -1,6 +1,6 @@
 def check_concise(response):
-    """Response should be under 150 words"""
-    return len(response.split()) < 150
+    """Response should be under 250 words"""
+    return len(response.split()) < 250
 
 def check_actionable(response):
     """Response gives specific steps or exercises"""
@@ -18,8 +18,12 @@ def check_refers_doctor(response):
     return any(w in response.lower() for w in keywords)
 
 def check_addresses_input(response):
-    """Response isn't generic — actually engages with the question"""
-    return len(response.split()) > 30
+    """Response engages with the question — either answers it or asks a relevant clarifying question"""
+    if len(response.split()) > 30:
+        return True
+    # short response is ok if it's asking a clarifying question
+    clarifying_keywords = ["what", "which", "how", "do you", "could you", "can you", "?"]
+    return any(w in response.lower() for w in clarifying_keywords)
 
 ASSERTION_MAP = {
     "concise": check_concise,

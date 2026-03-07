@@ -86,4 +86,13 @@ def run_evals(version="v1"):
     return overall
 
 if __name__ == "__main__":
-    run_evals("v1")
+    v1_score = run_evals("v1")
+    v2_score = run_evals("v2")
+
+    print(f"📊 Comparison")
+    print(f"  v1: {v1_score}%")
+    print(f"  v2: {v2_score}%")
+    if v2_score >= v1_score:
+        print(f"  ✅ v2 holds or improves on v1")
+    else:
+        print(f"  ⚠️  v2 regressed — check the failures")

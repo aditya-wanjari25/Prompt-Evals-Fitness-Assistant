@@ -25,3 +25,4 @@ python run_evals.py
 | Prompt Version | Score | Date |
 |---|---|---|
 | v1 | 97% (37/38) | Mar, 7 2026|
+| v2 | 97% (37/38) | Mar, 7 2026|
