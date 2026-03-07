@@ -24,4 +24,4 @@ python run_evals.py
 ## Results
 | Prompt Version | Score | Date |
 |---|---|---|
-| v1 | 97% (37/38) | today's date |
+| v1 | 97% (37/38) | Mar, 7 2026|
