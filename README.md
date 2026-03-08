@@ -22,7 +22,7 @@ python run_evals.py
 ```
 
 ## Results
-| Prompt Version | Score | Date |
+| Prompt Version | Score | Key Change
 |---|---|---|
-| v1 | 100% (38/38) | Mar, 7 2026|
-| v2 | 97% (37/38) | Mar, 7 2026|
+| v1 | 100% (38/38) | Fixed gaps in assertions |
+| v2 | 100% (38/38) | Added LLM as a judge for context aware assertions |
