@@ -4,6 +4,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 from assertions.checks import ASSERTION_MAP
+from assertions.llm_judge import llm_judge  
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -48,6 +49,7 @@ def run_evals(version="v1"):
     for tc in test_cases:
         response = get_response(tc["message"], prompt)
         scored = score_response(response, tc["assertions"])
+        judge = llm_judge(client, response, tc["category"])  
 
         total_passed += scored["score"]
         total_assertions += scored["total"]
@@ -57,6 +59,8 @@ def run_evals(version="v1"):
         for assertion, passed in scored["results"].items():
             print(f"  {'✅' if passed else '❌'} {assertion}")
         print(f"  Score: {scored['score']}/{scored['total']}")
+        judge_icon = "✅" if judge["passed"] else "❌"
+        print(f"  {judge_icon} LLM judge: {judge['reason']}")  
 
         run_results.append({
             "id": tc["id"],
@@ -64,18 +68,23 @@ def run_evals(version="v1"):
             "message": tc["message"],
             "response": response,
             "scored": scored,
+            "llm_judge": judge  
         })
 
     overall = round((total_passed / total_assertions) * 100)
-    print(f"\n{'='*50}")
-    print(f"✅ Overall: {total_passed}/{total_assertions} ({overall}%)")
+    llm_passes = sum(1 for r in run_results if r["llm_judge"]["passed"])  
+    llm_total = len(run_results)  
 
-    # Save results
+    print(f"\n{'='*50}")
+    print(f"✅ Keyword score: {total_passed}/{total_assertions} ({overall}%)")
+    print(f"🤖 LLM judge: {llm_passes}/{llm_total} passed")  
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output = {
         "prompt_version": version,
         "timestamp": timestamp,
         "overall_score": overall,
+        "llm_judge_score": f"{llm_passes}/{llm_total}",  
         "results": run_results
     }
     os.makedirs("results", exist_ok=True)
